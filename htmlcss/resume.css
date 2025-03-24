@@ -1,0 +1,58 @@
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+}
+h1 {
+    font-size: 36px;
+    font-style: italic;
+    color: #1a73e8;
+}
+
+h2 {
+    font-size: 24px;
+    font-style: italic;
+    color: #555;
+}
+header{
+    text-align: center;
+}
+.contact-info {
+    color: #1a73e8;  
+    display: flex;
+    justify-content: space-around;
+}
+.experience {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+.skills {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+ul li:hover {
+    background-color: #d3d3d3;
+    cursor: pointer;
+}
+a:link {
+    color: #1a73e8;
+    text-decoration: none;
+}
+a:visited {
+    color: #3c763d;
+}
+
+a:hover {
+    color: #d9534f;
+    text-decoration: underline;
+}
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+}
