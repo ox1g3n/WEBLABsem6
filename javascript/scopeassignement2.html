@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Activity Report</title>
+  <script>
+    // Hoisting Experiment
+    console.log(category); // Will print undefined
+    var category = "Student Performance Category";
+
+    // Global Variables
+    var studentName = ""; // Will be updated from form
+    var activityScores = []; // Will be updated from form
+
+    // Function Declaration
+    function calculateTotal() {
+      return activityScores.reduce((sum, score) => sum + score, 0);
+    }
+
+    // Function Expression (Anonymous Function stored in a variable)
+    const evaluateRank = function(totalScore) {
+      if (totalScore > 40) {
+        return "Star Performer";
+      } else if (totalScore >= 30) {
+        return "Active";
+      } else {
+        return "Inactive";
+      }
+    };
+
+    // Anonymous Function to calculate Average
+    const calculateAverage = function(scores) {
+      return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+    };
+
+    // Lexical Scope Task
+    function generateReport() {
+      const totalScore = calculateTotal();
+      const averageScore = calculateAverage(activityScores);
+      const rank = evaluateRank(totalScore);
+
+      function showDetails() {
+        // Nested function accessing outer function variables
+        return `
+Student Name: ${studentName}
+Total Score: ${totalScore}
+Average Score: ${averageScore.toFixed(2)}
+Rank: ${rank}
+Message: Keep up the great work!`;
+      }
+
+      return showDetails();
+    }
+
+    // Handle form submit
+    function handleFormSubmit(event) {
+      event.preventDefault(); // Prevent page reload
+      
+      // Getting inputs
+      studentName = document.getElementById('studentName').value;
+      const scoresInput = document.getElementById('activityScores').value;
+
+      // Updating global array
+      activityScores = scoresInput.split(',').map(score => Number(score.trim()));
+
+      // Generate the final report
+      const report = generateReport();
+
+      // Display it on the webpage
+      document.getElementById('output').innerText = report;
+    }
+
+    // Scope Isolation Test
+    if (true) {
+      var blockVar = "I am accessible outside the block (because var is function-scoped)";
+    }
+    console.log(blockVar); // Works fine because 'var' does not have block scope
+  </script>
+</head>
+
+<body>
+  <h2>Student Activity Score Submission</h2>
+  <form onsubmit="handleFormSubmit(event)">
+    <label for="studentName">Student Name:</label><br/>
+    <input type="text" id="studentName" required /><br/><br/>
+
+    <label for="activityScores">Activity Scores (comma-separated):</label><br/>
+    <input type="text" id="activityScores" placeholder="e.g., 10, 20, 15, 5" required /><br/><br/>
+
+    <button type="submit">Generate Report</button>
+  </form>
+
+  <h3>Report:</h3>
+  <pre id="output" style="background-color: #f0f0f0; padding: 10px;"></pre>
+</body>
+</html>

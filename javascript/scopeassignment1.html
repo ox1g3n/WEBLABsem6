@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      // Global variable 
+      let score = 0;
+     //normal function declaration
+      function question1() {
+        // Local variable 
+        let ans = prompt("What is 5 + 5?");
+        if (ans === "10") {
+          score += 1;
+          console.log("Correct");
+        } else {
+          console.log("Wrong");
+        }
+      }
+
+      // normal function declaration
+      function question2() {
+        // Local variable 
+        let ans = prompt("What is the capital of France?");
+        if (ans.toLowerCase() === "paris") {
+          score += 1;
+          console.log("Correct");
+        } else {
+          console.log("Wrong");
+        }
+      }
+
+      // function expression
+      const question3 = function () {
+        // Local variable 
+        let ans = prompt("What is the square root of 16?");
+        if (ans === "4") {
+          score += 1;
+          console.log("Correct");
+        } else {
+          console.log("Wrong");
+        }
+      };
+      // Hoisting 
+      console.log("Before declaration, hoistedVar is: " + hoisted); // Will show undefined
+      var hoisted = "I'm hoisted!";
+      question1();
+      question2();
+      question3();
+      // Function expression 
+      const reviewScore = function () {
+        console.log(`Your final score is: ${score} out of 3`);
+      };
+      reviewScore();
+      // Bonus: 
+      function reviewScoreButton() {
+        try {
+          console.log(ans);//this fails as answer is local
+        } catch (error) {
+          console.log(
+            "Cannot access 'answer' variable. Outside of scope."
+          );
+        }
+      }
+      reviewScoreButton();
+    </script>
+  </head>
+  <body></body>
+</html>
