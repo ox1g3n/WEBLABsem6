@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const fun1 = (num1, num2) => {
+            if(num1 == num2){
+                var res = num1*num2;
+            }
+            else{
+                res = Math.min(num1,num2);
+            }
+            return res;
+        }
+        console.log(fun1(3,5));
+        console.log(fun1(4,4));
+
+
+        var x = 50;
+        var y = 'A';
+        const fun2 = ()=>{
+            if(x){
+                var y = 'B';
+            }
+            else{
+                y = 'C';
+            }
+            console.log({
+                'local':{'x':x, 'y':y},
+                'global':{'x':window.x, 'y':window.y}
+            });
+            var x = 30;
+            if(x){
+                var y = 'B';
+            }
+            else{
+                y = 'C';
+            }
+            console.log({
+                'local':{'x':x, 'y':y},
+                'global':{'x':window.x, 'y':window.y}
+            });
+        }
+        fun2();
+        console.log({
+            'global':{'x':x, 'y':y}
+        })
+    </script>
+</body>
+</html>
