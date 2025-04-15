@@ -1,0 +1,3 @@
+run the code using pytest tests.py
+then execute coverage run -m unittest tests.py  
+then to get coverage results execute coverage report
