@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Final Year Placement System</title>
+  <style>
+    #result { margin-top: 20px; border: 1px solid #ccc; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Final Year Placement System</h1>
+  <form id="studentForm">
+    USN: <input type="text" name="USN" required><br>
+    Name: <input type="text" name="Name" required><br>
+    Company Name: <input type="text" name="Company_name" required><br>
+    <button type="button" onclick="addStudent()">Add Student</button>
+  </form>
+  <button onclick="showAllStudents()">Show All Students</button>
+  <button onclick="showInfosysStudents()">Show Students Selected for Infosys</button>
+  <div id="result"></div>
+  <script>
+    async function addStudent() {
+      const form = document.getElementById('studentForm');
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      try {
+        const response = await fetch('http://localhost:3000/students', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.text();
+        document.getElementById('result').innerHTML = result;
+        form.reset();
+      } catch (err) {
+        document.getElementById('result').innerHTML = 'Error: ' + err;
+      }
+    }
+    async function showAllStudents() {
+      try {
+        const response = await fetch('http://localhost:3000/students');
+        const students = await response.json();
+        displayStudents(students, 'All Final Year Students');
+      } catch (err) {
+        document.getElementById('result').innerHTML = 'Error: ' + err;
+      }
+    }
+    async function showInfosysStudents() {
+      try {
+        const response = await fetch('http://localhost:3000/students/infosys');
+        const students = await response.json();
+        displayStudents(students, 'Students Selected for Infosys');
+      } catch (err) {
+        document.getElementById('result').innerHTML = 'Error: ' + err;
+      }
+    }
+    function displayStudents(students, title) {
+      const result = document.getElementById('result');
+      result.innerHTML = `<h3>${title}</h3>`;
+      if (students.length === 0) {
+        result.innerHTML += '<p>No students found.</p>';
+      } else {
+        result.innerHTML += '<table border="1" style="width:100%">';
+        result.innerHTML += '<tr><th>USN</th><th>Name</th><th>Company Name</th></tr>';
+        students.forEach(student => {
+          result.innerHTML += `
+            <tr>
+              <td>${student.USN}</td>
+              <td>${student.Name}</td>
+              <td>${student.Company_name}</td>
+            </tr>
+          `;
+        });
+        result.innerHTML += '</table>';
+      }
+    }
+  </script>
+</body>
+</html>

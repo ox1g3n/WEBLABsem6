@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exam Management System</title>
+  <style>
+    #result { margin-top: 20px; border: 1px solid #ccc; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Exam Management System</h1>
+  <form id="studentForm">
+    Student Name: <input type="text" name="student_name" required><br>
+    USN: <input type="text" name="usn" required><br>
+    Department: <input type="text" name="department" required><br>
+    Subject: <input type="text" name="subject" required><br>
+    Marks: <input type="number" name="marks" required><br>
+    Grade: 
+    <select name="grade" required>
+      <option value="">Select Grade</option>
+      <option value="S">S (Outstanding)</option>
+      <option value="A">A (Excellent)</option>
+      <option value="B">B (Very Good)</option>
+      <option value="C">C (Good)</option>
+      <option value="D">D (Satisfactory)</option>
+      <option value="F">F (Fail)</option>
+    </select><br>
+    Exam Date: <input type="date" name="exam_date" required><br>
+    <button type="button" onclick="addStudent()">Add Student</button>
+  </form>
+  <button onclick="showAllStudents()">Show All Students</button>
+  <button onclick="showSGradeStudents()">Show Students with 'S' Grade</button>
+  <div id="result"></div>
+  <script>
+    async function addStudent() {
+      const form = document.getElementById('studentForm');
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      data.marks = Number(data.marks);
+      try {
+        const response = await fetch('http://localhost:3000/students', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.text();
+        document.getElementById('result').innerHTML = result;
+        form.reset();
+      } catch (err) {
+        document.getElementById('result').innerHTML = 'Error: ' + err;
+      }
+    }
+    async function showAllStudents() {
+      try {
+        const response = await fetch('http://localhost:3000/students');
+        const students = await response.json();
+        displayStudents(students, 'All Students');
+      } catch (err) {
+        document.getElementById('result').innerHTML = 'Error: ' + err;
+      }
+    }
+    async function showSGradeStudents() {
+      try {
+        const response = await fetch('http://localhost:3000/students/s-grade');
+        const students = await response.json();
+        displayStudents(students, 'Students with S Grade');
+      } catch (err) {
+        document.getElementById('result').innerHTML = 'Error: ' + err;
+      }
+    }
+    function displayStudents(students, title) {
+      const result = document.getElementById('result');
+      result.innerHTML = `<h3>${title}</h3>`;
+      if (students.length === 0) {
+        result.innerHTML += '<p>No students found.</p>';
+      } else {
+        result.innerHTML += '<table border="1" style="width:100%">';
+        result.innerHTML += '<tr><th>Name</th><th>USN</th><th>Department</th><th>Subject</th><th>Marks</th><th>Grade</th><th>Exam Date</th></tr>';
+        students.forEach(student => {
+          result.innerHTML += `
+            <tr>
+              <td>${student.student_name}</td>
+              <td>${student.usn}</td>
+              <td>${student.department}</td>
+              <td>${student.subject}</td>
+              <td>${student.marks}</td>
+              <td>${student.grade}</td>
+              <td>${student.exam_date}</td>
+            </tr>
+          `;
+        });
+        result.innerHTML += '</table>';
+      }
+    }
+  </script>
+</body>
+</html>

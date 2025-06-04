@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance Management System</title>
+  <style>
+    #result { margin-top: 20px; border: 1px solid #ccc; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Attendance Management System</h1>
+  <form id="studentForm">
+    Student Name: <input type="text" name="student_name" required><br>
+    USN: <input type="text" name="usn" required><br>
+    Department: <input type="text" name="department" required><br>
+    Subject: <input type="text" name="subject" required><br>
+    Classes Attended: <input type="number" name="classes_attended" required><br>
+    Total Classes: <input type="number" name="total_classes" required><br>
+    <button type="button" onclick="addStudent()">Add Student</button>
+  </form>
+  <button onclick="showAllStudents()">Show All Students</button>
+  <button onclick="showLowAttendance()">Show Students with Attendance < 75%</button>
+  <div id="result"></div>
+  <script>
+    async function addStudent() {
+      const form = document.getElementById('studentForm');
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      data.classes_attended = Number(data.classes_attended);
+      data.total_classes = Number(data.total_classes);
+      data.attendance_percentage = ((data.classes_attended / data.total_classes) * 100).toFixed(2);
+      try {
+        const response = await fetch('http://localhost:3000/students', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.text();
+        document.getElementById('result').innerHTML = result;
+        form.reset();
+      } catch (err) {
+        document.getElementById('result').innerHTML = 'Error: ' + err;
+      }
+    }
+    async function showAllStudents() {
+      try {
+        const response = await fetch('http://localhost:3000/students');
+        const students = await response.json();
+        displayStudents(students, 'All Students');
+      } catch (err) {
+        document.getElementById('result').innerHTML = 'Error: ' + err;
+      }
+    }
+    async function showLowAttendance() {
+      try {
+        const response = await fetch('http://localhost:3000/students/low-attendance');
+        const students = await response.json();
+        displayStudents(students, 'Students with Attendance < 75%');
+      } catch (err) {
+        document.getElementById('result').innerHTML = 'Error: ' + err;
+      }
+    }
+    function displayStudents(students, title) {
+      const result = document.getElementById('result');
+      result.innerHTML = `<h3>${title}</h3>`;
+      if (students.length === 0) {
+        result.innerHTML += '<p>No students found.</p>';
+      } else {
+        result.innerHTML += '<table border="1" style="width:100%">';
+        result.innerHTML += '<tr><th>Name</th><th>USN</th><th>Department</th><th>Subject</th><th>Attended</th><th>Total</th><th>Percentage</th></tr>';
+        students.forEach(student => {
+          result.innerHTML += `
+            <tr>
+              <td>${student.student_name}</td>
+              <td>${student.usn}</td>
+              <td>${student.department}</td>
+              <td>${student.subject}</td>
+              <td>${student.classes_attended}</td>
+              <td>${student.total_classes}</td>
+              <td>${student.attendance_percentage}%</td>
+            </tr>
+          `;
+        });
+        result.innerHTML += '</table>';
+      }
+    }
+  </script>
+</body>
+</html>

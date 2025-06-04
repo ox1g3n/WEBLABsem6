@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Registration</title>
+    <style>
+        #studentsList {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Registration</h1>
+    <form action="http://localhost:3000/students" method="POST">
+        Student Name: <input type="text" name="Student_name" required><br>
+        USN: <input type="text" name="USN" required><br>
+        Semester: <input type="number" name="semester" required><br>
+        Exam Fee Paid: 
+        <input type="radio" name="exam_fee" value="true" required> Yes
+        <input type="radio" name="exam_fee" value="false"> No<br>
+        <button type="submit">Submit</button>
+    </form>
+    <form action="http://localhost:3000/students/delete-unpaid" method="POST">
+        <button type="submit">Delete Students Who Have Not Paid Fees</button>
+    </form>
+    <form id="viewAllForm">
+        <button type="button" onclick="fetchAllStudents()">View All Students</button>
+    </form>
+    <div id="studentsList"></div>
+    <script>
+        async function fetchAllStudents() {
+            try {
+                console.log("Api call se pehle") 
+                const response = await fetch('http://localhost:3000/students');
+                console.log("Api call ke bad") 
+                const students = await response.json();
+                const list = document.getElementById('studentsList');
+                list.innerHTML = '<h3>All Students</h3>';
+                if (students.length === 0) {
+                    list.innerHTML += '<p>No students found.</p>';
+                } else {
+                    list.innerHTML += '<ul>';
+                    students.forEach(student => {
+                        list.innerHTML += `
+                            <li>
+                                Name: ${student.Student_name}, 
+                                USN: ${student.USN}, 
+                                Semester: ${student.semester}, 
+                                Exam Fee Paid: ${student.exam_fee ? 'Yes' : 'No'}
+                            </li>
+                        `;
+                    });
+                    list.innerHTML += '</ul>';
+                }
+            } catch (error) {
+                document.getElementById('studentsList').innerHTML = 'Error fetching students: ' + error;
+            }
+        }
+    </script>
+</body>
+</html>
